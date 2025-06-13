@@ -8,6 +8,7 @@ import json
 from urllib3.exceptions import NewConnectionError, ProtocolError
 from typing import Dict, Tuple, Optional, Callable
 from datetime import datetime
+from autoketik_rs import autoketik
 
 # Constants for terminal colors
 GREEN = "\033[1;92m"
@@ -493,17 +494,6 @@ API_CONFIGS = [
     },
         # Add more API configs here
 ]
-
-def autoketik(message: str) -> None:
-    """Prints a message with a typing effect in the terminal.
-    
-    Args:
-        message: The string to print with a typing effect.
-    """
-    for char in message + "\n":
-        sys.stdout.write(char)
-        sys.stdout.flush()
-        time.sleep(0.05)
 
 def countdown(seconds: int) -> None:
     """Displays a countdown timer with date and time information.
