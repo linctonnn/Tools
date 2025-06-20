@@ -2,7 +2,7 @@
 
 A Python-based automation tool for sending multiple WhatsApp messages using Selenium.
 
-![WhatsApp Logo](https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg){: width="100" height="100"}
+![WhatsApp Logo](https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg)
 
 ## 📌 Disclaimer
 
